@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Create Account — Empowering the Nation</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* small page-specific tweaks to match contact page layout */
+    main.content {
+      padding: 28px;
+      max-width: 760px;
+      margin: 32px auto;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e6e9ef;
+    }
+
+    form.simple {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .row .col {
+      flex: 1;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #e6e9ef;
+      box-sizing: border-box;
+    }
+
+    .avatar-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 8px;
+      background: #eef2f5;
+      display: inline-block;
+      overflow: hidden;
+      object-fit: cover;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="logo-section">
+        <img src="images/logo.png" alt="Empowering Logo" class="logo" />
+        <p>
+          <a href="#" class="btn"
+            onclick="if (document.referrer) { history.back(); } else { location.href='index.html'; } return false;"
+            aria-label="Go back to previous page">←</a>
+        <p>
+          <a href="find-your-future.html" class="btn" aria-label="Go forward to next page">→</a>
+        </p>
+
+        </p>
+      </div>
+      <nav>
+        <a href="index.html" class="btn">Home</a>
+        <a href="contact.html" class="btn">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content">
+    <h1>Create an account</h1>
+    <p class="muted">Create a simple account to join Empowering The Nation. We'll only ask for the essentials.</p>
+
+    <form id="createForm" class="simple" novalidate>
+      <div class="row">
+        <div class="col">
+          <label for="firstName">First name</label>
+          <input id="firstName" name="firstName" type="text" autocomplete="given-name" required />
+        </div>
+        <div class="col">
+          <label for="lastName">Last name</label>
+          <input id="lastName" name="lastName" type="text" autocomplete="family-name" />
+        </div>
+      </div>
+
+      <div>
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required />
+        <div class="muted">Minimum 8 characters.</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <div>
+          <label for="avatar">Profile picture (optional)</label>
+          <input id="avatar" name="avatar" type="file" accept="image/*" />
+        </div>
+        <div aria-hidden="true">
+          <img id="avatarPreview" class="avatar-thumb" src="images/logo.png" alt="avatar preview">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="submitBtn" type="submit" class="btn">Create account</button>
+        <a href="index.html" class="btn secondary">Cancel</a>
+        <div style="margin-left:auto" class="muted">Already have an account? <a href="#"
+            style="color:var(--accent)">Sign in</a></div>
+      </div>
+
+      <small id="formError" class="muted" role="alert" aria-live="polite" style="display:none;color:#b91c1c"></small>
+    </form>
+  </main>
+
+  <script>
+    // Minimal client-side behavior: simple validation, avatar preview.
+    const form = document.getElementById('createForm');
+    const pwd = document.getElementById('password');
+    const avatar = document.getElementById('avatar');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const formError = document.getElementById('formError');
+
+    avatar.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) { avatarPreview.src = 'images/logo.png'; return; }
+      if (!f.type.startsWith('image/')) return;
+      const r = new FileReader();
+      r.onload = () => avatarPreview.src = r.result;
+      r.readAsDataURL(f);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.style.display = 'none';
+      if (!form.checkValidity()) {
+        formError.textContent = 'Please fill out the required fields.';
+        formError.style.display = 'block';
+        return;
+      }
+      if (pwd.value.length < 8) {
+        formError.textContent = 'Password must be at least 8 characters.';
+        formError.style.display = 'block';
+        pwd.focus();
+        return;
+      }
+      // Replace with real submission logic
+      document.getElementById('submitBtn').textContent = 'Creating…';
+      setTimeout(() => {
+        alert('Account created. (Demo)');
+        location.href = 'index.html';
+      }, 600);
+    });
+  </script>
+</body>
+
+</html>

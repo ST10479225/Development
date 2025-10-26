@@ -1,0 +1,174 @@
+/* Reset & base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+  color: #111;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Navigation Bar */
+header {
+  background-color: #00bb72;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #00784d;
+}
+
+.nav-bar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn {
+  background-color: #0277bd;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.user-icon {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+/* Main Content */
+main.content {
+  padding: 40px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+h1 {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+p {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.venues {
+  margin-top: 20px;
+}
+
+.venue {
+  margin-top: 10px;
+  line-height: 1.5;
+}
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8fafa;
+  color: #111;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3cbb57;
+  padding: 15px 30px;
+}
+
+.logo img {
+  width: 60px;
+  height: auto;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: bold;
+  background-color: #007bff;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+.hero {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.btn {
+  background-color: #007bff;
+  color: white;
+  padding: 15px 25px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 30px;
+  display: inline-block;
+}
+/* Style for course images */
+.image {
+  width: 450px;
+  height: 450px;
+  object-fit: cover; /* Ensures the image fills the box without distortion */
+  display: block;
+  margin: 12px 0;
+  border-radius: 8px; /* Optional: adds slightly rounded corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Optional: adds subtle shadow */
+}
+.image-small {
+  width: 300px;
+  height: 300px;
+  object-fit: cover; /* Ensures the image fills the box without distortion */
+  display: block;
+  margin: 12px 0;
+  border-radius: 8px; /* Optional: adds slightly rounded corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Optional: adds subtle shadow */
+}
+
+

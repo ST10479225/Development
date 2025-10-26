@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculate Fees — Empowering the Nation</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* match create-account / contact page layout */
+    main.content {
+      padding: 28px;
+      max-width: 760px;
+      margin: 32px auto;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e6e9ef;
+    }
+    form.simple { display:flex; flex-direction:column; gap:12px; }
+    input[type="text"], input[type="email"], input[type="tel"]{
+      width:100%; padding:10px 12px; border-radius:6px; border:1px solid #e6e9ef; box-sizing:border-box;
+    }
+    fieldset { border:1px solid #eef2f5; padding:12px; border-radius:6px; }
+    legend { font-weight:600; padding:0 6px; }
+    .muted { color:#6b7280; font-size:0.95rem; }
+    .actions { display:flex; gap:12px; align-items:center; margin-top:6px; }
+    h3#totalFee { margin-top:12px; }
+
+    /* two-column courses layout */
+    .course-columns { display:flex; gap:16px; margin-top:8px; }
+    .course-column { flex:1; }
+    .course-column label { display:block; margin:6px 0; }
+    .output { border:1px dashed #e6e9ef; padding:12px; border-radius:6px; background:#fbfcfe; margin-top:12px; }
+    .output p { margin:6px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="logo-section">
+        <img src="images/logo.png" alt="Empowering Logo" class="logo" />
+      </div>
+      <nav>
+        <a href="index.html" class="btn">Home</a>
+        <a href="contact.html" class="btn">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content">
+    <h1>Calculate Course Fees</h1>
+    <p class="muted">Choose courses below and calculate the total fee. This is a simple client-side estimator.</p>
+
+    <form id="feeForm" class="simple" novalidate>
+      <div>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" required />
+      </div>
+
+      <div>
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="tel" placeholder="+27 82 123 4567" pattern="^\+?\d[\d\s-]{7,}$" />
+      </div>
+
+      <div>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required />
+      </div>
+
+      <!-- Courses split into two columns: six-month (left) and six-week (right) -->
+      <div class="course-columns" role="group" aria-label="Course selection">
+        <fieldset class="course-column" id="sixMonthFieldset">
+          <legend>Six-month courses</legend>
+          <label><input type="checkbox" name="sixMonth" value="7000" /> Six-month First Aid — R1,500</label>
+          <label><input type="checkbox" name="sixMonth" value="7000" /> Six-month Sewing — R1,500</label>
+          <label><input type="checkbox" name="sixMonth" value="9000" /> Six-month Landscaping — R1,500</label>
+          <label><input type="checkbox" name="sixMonth" value="6500" /> Six-month Life Skills — R1,500</label>
+        </fieldset>
+
+        <fieldset class="course-column" id="sixWeekFieldset">
+          <legend>Six-week courses</legend>
+          <label><input type="checkbox" name="sixWeek" value="2000" /> Six-week Child Minding — R750</label>
+          <label><input type="checkbox" name="sixWeek" value="2500" /> Six-week Cooking — R750</label>
+          <label><input type="checkbox" name="sixWeek" value="2700" /> Six-week Gardening Maintenance — R750</label>
+        </fieldset>
+      </div>
+
+      <div class="actions" style="align-items:flex-start;">
+        <button type="button" id="calcBtn" class="btn">Calculate Total</button>
+        <a href="find-your-future.html" class="btn secondary">Browse Courses</a>
+        <div style="margin-left:auto" class="muted">Selected: <span id="countSelected">0</span></div>
+      </div>
+
+      <!-- Output area: selected courses, discount and totals -->
+      <div id="output" class="output" aria-live="polite" style="display:none;">
+        <p><strong>Courses selected:</strong></p>
+        <ul id="selectedList"></ul>
+
+        <p id="subtotalLine"><strong>Subtotal:</strong> R0</p>
+        <p id="discountLine"><strong>Discount:</strong> R0</p>
+        <p id="totalLine"><strong>Total fee:</strong> R0</p>
+      </div>
+
+      <small id="formError" class="muted" role="alert" style="display:none;color:#b91c1c"></small>
+    </form>
+  </main>
+
+  <script>
+    const feeForm = document.getElementById('feeForm');
+    const calcBtn = document.getElementById('calcBtn');
+    const formError = document.getElementById('formError');
+    const output = document.getElementById('output');
+    const selectedList = document.getElementById('selectedList');
+    const subtotalLine = document.getElementById('subtotalLine');
+    const discountLine = document.getElementById('discountLine');
+    const totalLine = document.getElementById('totalLine');
+    const countSelected = document.getElementById('countSelected');
+
+    function formatZAR(n) {
+      return 'R' + n.toLocaleString('en-ZA');
+    }
+
+    function calculateTotal() {
+      formError.style.display = 'none';
+      output.style.display = 'none';
+      selectedList.innerHTML = '';
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      if (!name || !email) {
+        formError.textContent = 'Please provide your name and email.';
+        formError.style.display = 'block';
+        return;
+      }
+
+      const sixMonthChecks = Array.from(feeForm.querySelectorAll('input[name="sixMonth"]:checked'));
+      const sixWeekChecks = Array.from(feeForm.querySelectorAll('input[name="sixWeek"]:checked'));
+      const allSelected = sixMonthChecks.concat(sixWeekChecks);
+
+      countSelected.textContent = allSelected.length;
+
+      if (allSelected.length === 0) {
+        formError.textContent = 'Please select at least one course.';
+        formError.style.display = 'block';
+        return;
+      }
+
+      // build selected course list and compute subtotals
+      let sixMonthSubtotal = 0;
+      let sixWeekSubtotal = 0;
+      const selectedNames = [];
+
+      sixMonthChecks.forEach(ch => {
+        sixMonthSubtotal += Number(ch.value);
+        selectedNames.push(ch.parentNode.textContent.trim());
+      });
+      sixWeekChecks.forEach(ch => {
+        sixWeekSubtotal += Number(ch.value);
+        selectedNames.push(ch.parentNode.textContent.trim());
+      });
+
+      const subtotal = sixMonthSubtotal + sixWeekSubtotal;
+
+      // Discount rules:
+      // - If user selects 2 or more six-month courses -> 10% off six-month subtotal
+      // - Else if total selected courses >= 3 -> 5% off total
+      // - Otherwise 0
+      let discount = 0;
+      if (sixMonthChecks.length >= 2) {
+        discount = Math.round(sixMonthSubtotal * 0.10);
+      } else if (allSelected.length >= 3) {
+        discount = Math.round(subtotal * 0.05);
+      }
+
+      const total = subtotal - discount;
+
+      // Populate output
+      selectedNames.forEach(nameText => {
+        const li = document.createElement('li');
+        li.textContent = nameText;
+        selectedList.appendChild(li);
+      });
+
+      subtotalLine.innerHTML = `<strong>Subtotal:</strong> ${formatZAR(subtotal)}`;
+      discountLine.innerHTML = `<strong>Discount:</strong> ${formatZAR(discount)}`;
+      totalLine.innerHTML = `<strong>Total fee:</strong> ${formatZAR(total)}`;
+
+      output.style.display = 'block';
+    }
+
+    // update selected count live when checkboxes change
+    const allCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+    allCheckboxes.forEach(cb => cb.addEventListener('change', () => {
+      const selected = document.querySelectorAll('input[type="checkbox"]:checked');
+      countSelected.textContent = selected.length;
+    }));
+
+    calcBtn.addEventListener('click', calculateTotal);
+  </script>
+</body>
+</html>
